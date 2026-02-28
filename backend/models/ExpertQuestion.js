@@ -7,7 +7,10 @@ const ExpertQuestionSchema = new mongoose.Schema({
     audioBase64: { type: String, default: null },
     audioMimeType: { type: String, default: null },
     status: { type: String, enum: ['pending', 'answered'], default: 'pending' },
+    answerType: { type: String, enum: ['text', 'voice'], default: 'text' },
     answer: { type: String, default: null },
+    answerAudioBase64: { type: String, default: null },
+    answerAudioMimeType: { type: String, default: null },
 }, { timestamps: true });
 
 module.exports = mongoose.model('ExpertQuestion', ExpertQuestionSchema);

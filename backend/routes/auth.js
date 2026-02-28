@@ -8,7 +8,7 @@ const router = express.Router();
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password, role, specialty, hospital } = req.body;
+        const { name, email, password, role, specialty, hospital, birthDate, city } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Ad, e-posta ve parola gereklidir' });
         }
@@ -33,6 +33,8 @@ router.post('/register', async (req, res) => {
         const user = await User.create({
             name: name.trim(),
             email: email.toLowerCase().trim(),
+            birthDate: birthDate ? birthDate.trim() : '',
+            city: city ? city.trim() : '',
             passwordHash,
             role: userRole,
             // Doktor kayıtları admin onayı bekler; hastalar direkt aktif
@@ -53,7 +55,7 @@ router.post('/register', async (req, res) => {
 
         res.status(201).json({
             token,
-            user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status },
+            user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status, birthDate: user.birthDate, city: user.city },
         });
     } catch (err) {
         console.error('Register error:', err);
@@ -91,7 +93,7 @@ router.post('/login', async (req, res) => {
 
         res.json({
             token,
-            user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status },
+            user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status, birthDate: user.birthDate, city: user.city },
         });
     } catch (err) {
         console.error('Login error:', err);
@@ -104,8 +106,36 @@ router.get('/me', require('../middleware/auth'), async (req, res) => {
     try {
         const user = await User.findById(req.userId).select('-passwordHash');
         if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
-        res.json({ id: user._id, name: user.name, email: user.email, role: user.role, status: user.status });
+        res.json({ id: user._id, name: user.name, email: user.email, role: user.role, status: user.status, birthDate: user.birthDate, city: user.city });
     } catch (err) {
+        res.status(500).json({ error: 'Sunucu hatası' });
+    }
+});
+
+// PATCH /api/auth/profile — update current user profile (birthDate, city etc)
+router.patch('/profile', require('../middleware/auth'), async (req, res) => {
+    try {
+        const { birthDate, city } = req.body;
+        const updateData = {};
+        if (birthDate !== undefined) updateData.birthDate = birthDate.trim();
+        if (city !== undefined) updateData.city = city.trim();
+
+        const user = await User.findByIdAndUpdate(
+            req.userId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).select('-passwordHash');
+
+        if (!user) {
+            return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+        }
+
+        res.json({
+            message: 'Profil güncellendi',
+            user: { id: user._id, name: user.name, email: user.email, role: user.role, status: user.status, birthDate: user.birthDate, city: user.city }
+        });
+    } catch (err) {
+        console.error('Update profile error:', err);
         res.status(500).json({ error: 'Sunucu hatası' });
     }
 });

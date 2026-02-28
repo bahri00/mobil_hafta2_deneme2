@@ -16,6 +16,7 @@ app.use('/api/experiences', require('./routes/experiences'));
 app.use('/api/symptom-entries', require('./routes/symptomEntries'));
 app.use('/api/expert-questions', require('./routes/expertQuestions'));
 app.use('/api/blood-tests', require('./routes/bloodTests'));
+app.use('/api/patients', require('./routes/patients'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Health check
@@ -23,7 +24,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Dat
 
 // ─── Admin Panel (HTML) ────────────────────────────────────────────────────
 app.get('/admin', (req, res) => {
-    res.send(`<!DOCTYPE html>
+  res.send(`<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
@@ -182,52 +183,52 @@ document.getElementById('secret').addEventListener('keydown', e => { if (e.key =
 
 // ─── Seed initial experience data ─────────────────────────────────────────
 async function seedExperiences() {
-    const Experience = require('./models/Experience');
-    const count = await Experience.countDocuments();
-    if (count > 0) return;
+  const Experience = require('./models/Experience');
+  const count = await Experience.countDocuments();
+  if (count > 0) return;
 
-    const seedData = [
-        {
-            title: 'Kemoterapi Sürecinde Güçlü Kalmak',
-            summary: 'Kemoterapinin yan etkileriyle nasıl baş ettiğimi ve umudumu nasıl koruduğumu anlatıyorum.',
-            content: 'Meme kanseri tanısı aldığımda dünyam başıma yıkıldı. Ancak doktorlarımın desteği ve ailemle birlikte bu süreci atlatmayı başardım.\n\nTedavi sürecinde en çok zorlandığım konu kemoterapi yan etkileri oldu. Özellikle bulantı ve yorgunluk günlük hayatımı çok etkiledi. Ama zamanla bunlarla başa çıkmayı öğrendim; bol su içmek, hafif egzersizler ve nefes teknikleri gerçekten yardımcı oldu.\n\nSaçlarımın dökülmesi psikolojik olarak ağır gelse de bunu zamanla kabullenmeyi öğrendim. Aile bireylerim yanımda olduğunda her şey çok daha katlanılır hale geldi.\n\nDiğer hastalara tavsiyem: Asla umudunuzu kaybetmeyin. Her gün küçük adımlarla ilerleyin. Destek gruplarına katılın, yalnız olmadığınızı bilin.',
-            author: 'Ayşe H.',
-            isSeeded: true,
-        },
-        {
-            title: 'Erken Tanı Hayat Kurtardı',
-            summary: 'Rutin kontrol sırasında tespit edilen kitlenin erken evrede yakalanması tedavi sürecimi nasıl kolaylaştırdı.',
-            content: 'Rutin kontrol sırasında tespit edilen küçük bir kitle hayatımı değiştirdi. Erken tanı sayesinde tedavi süreci çok daha kolay geçti.\n\nDüzenli mamografi kontrollerimin olması sayesinde kanser erken evrede yakalandı. Doktorumun dediği gibi, erken tanı gerçekten hayat kurtarıyor. Tanı anında çok korktum ama "erken evre" kelimelerini duyunca derin bir nefes alabildim.\n\nCerrahi sonrası radyoterapi aldım. Yan etkileri beklediğimden hafif oldu. En önemli şey tedaviye pozitif yaklaşmak ve doktorunuza güvenmek.\n\nTüm kadınlara düzenli kontrollerini yaptırmalarını şiddetle tavsiye ediyorum.',
-            author: 'Fatma K.',
-            isSeeded: true,
-        },
-        {
-            title: 'Destek Gruplarının Gücü',
-            summary: 'Hasta destek grubuna katılmanın tedavi sürecime manevi katkısını paylaşıyorum.',
-            content: 'Tanı aldığımda kendimi çok yalnız hissediyordum. Hasta destek grubuna katılmak en doğru kararlarımdan biri oldu.\n\nGrupta benzer deneyimleri yaşayan kadınlarla tanışmak moral ve motivasyonumu artırdı. Birbirimizin tedavi süreçlerini paylaşmak hem bilgilendirici hem de duygusal olarak rahatlatıcı oldu.\n\nPsikolojik destek almak da çok önemli. Profesyonel yardım almaktan çekinmeyin. Ruh sağlığınız fiziksel iyileşmenizi doğrudan etkiler.\n\nBugün hem fiziksel hem ruhsal olarak çok daha güçlüyüm.',
-            author: 'Zeynep M.',
-            isSeeded: true,
-        },
-    ];
+  const seedData = [
+    {
+      title: 'Kemoterapi Sürecinde Güçlü Kalmak',
+      summary: 'Kemoterapinin yan etkileriyle nasıl baş ettiğimi ve umudumu nasıl koruduğumu anlatıyorum.',
+      content: 'Meme kanseri tanısı aldığımda dünyam başıma yıkıldı. Ancak doktorlarımın desteği ve ailemle birlikte bu süreci atlatmayı başardım.\n\nTedavi sürecinde en çok zorlandığım konu kemoterapi yan etkileri oldu. Özellikle bulantı ve yorgunluk günlük hayatımı çok etkiledi. Ama zamanla bunlarla başa çıkmayı öğrendim; bol su içmek, hafif egzersizler ve nefes teknikleri gerçekten yardımcı oldu.\n\nSaçlarımın dökülmesi psikolojik olarak ağır gelse de bunu zamanla kabullenmeyi öğrendim. Aile bireylerim yanımda olduğunda her şey çok daha katlanılır hale geldi.\n\nDiğer hastalara tavsiyem: Asla umudunuzu kaybetmeyin. Her gün küçük adımlarla ilerleyin. Destek gruplarına katılın, yalnız olmadığınızı bilin.',
+      author: 'Ayşe H.',
+      isSeeded: true,
+    },
+    {
+      title: 'Erken Tanı Hayat Kurtardı',
+      summary: 'Rutin kontrol sırasında tespit edilen kitlenin erken evrede yakalanması tedavi sürecimi nasıl kolaylaştırdı.',
+      content: 'Rutin kontrol sırasında tespit edilen küçük bir kitle hayatımı değiştirdi. Erken tanı sayesinde tedavi süreci çok daha kolay geçti.\n\nDüzenli mamografi kontrollerimin olması sayesinde kanser erken evrede yakalandı. Doktorumun dediği gibi, erken tanı gerçekten hayat kurtarıyor. Tanı anında çok korktum ama "erken evre" kelimelerini duyunca derin bir nefes alabildim.\n\nCerrahi sonrası radyoterapi aldım. Yan etkileri beklediğimden hafif oldu. En önemli şey tedaviye pozitif yaklaşmak ve doktorunuza güvenmek.\n\nTüm kadınlara düzenli kontrollerini yaptırmalarını şiddetle tavsiye ediyorum.',
+      author: 'Fatma K.',
+      isSeeded: true,
+    },
+    {
+      title: 'Destek Gruplarının Gücü',
+      summary: 'Hasta destek grubuna katılmanın tedavi sürecime manevi katkısını paylaşıyorum.',
+      content: 'Tanı aldığımda kendimi çok yalnız hissediyordum. Hasta destek grubuna katılmak en doğru kararlarımdan biri oldu.\n\nGrupta benzer deneyimleri yaşayan kadınlarla tanışmak moral ve motivasyonumu artırdı. Birbirimizin tedavi süreçlerini paylaşmak hem bilgilendirici hem de duygusal olarak rahatlatıcı oldu.\n\nPsikolojik destek almak da çok önemli. Profesyonel yardım almaktan çekinmeyin. Ruh sağlığınız fiziksel iyileşmenizi doğrudan etkiler.\n\nBugün hem fiziksel hem ruhsal olarak çok daha güçlüyüm.',
+      author: 'Zeynep M.',
+      isSeeded: true,
+    },
+  ];
 
-    await Experience.insertMany(seedData);
-    console.log('✅ Seed: Hasta deneyimleri veritabanına eklendi.');
+  await Experience.insertMany(seedData);
+  console.log('✅ Seed: Hasta deneyimleri veritabanına eklendi.');
 }
 
 // ─── Connect & Start ───────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
 
 mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(async () => {
-        console.log('✅ MongoDB Atlas bağlantısı başarılı');
-        await seedExperiences();
-        app.listen(PORT, '0.0.0.0', () => {
-            console.log(`🚀 Backend sunucu: http://localhost:${PORT}`);
-            console.log(`🔧 Admin paneli: http://localhost:${PORT}/admin`);
-        });
-    })
-    .catch((err) => {
-        console.error('❌ MongoDB bağlantı hatası:', err.message);
-        process.exit(1);
+  .connect(process.env.MONGODB_URI)
+  .then(async () => {
+    console.log('✅ MongoDB Atlas bağlantısı başarılı');
+    await seedExperiences();
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Backend sunucu: http://localhost:${PORT}`);
+      console.log(`🔧 Admin paneli: http://localhost:${PORT}/admin`);
     });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB bağlantı hatası:', err.message);
+    process.exit(1);
+  });
