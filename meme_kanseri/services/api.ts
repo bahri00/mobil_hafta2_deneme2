@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // ⚠️ DEĞİŞTİR: Bilgisayarınızın yerel ağ IP adresini buraya yazın
 // Örn: 'http://192.168.1.42:3001'
 // Not: localhost veya 127.0.0.1 çalışmaz (Expo Go fiziksel cihazda bağlanamaz)
-export const BASE_URL = 'http://192.168.0.18:3001';
+export const BASE_URL = 'https://mobil-hafta2-deneme2.onrender.com';
 
 const TOKEN_KEY = 'auth_token';
 

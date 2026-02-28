@@ -12,7 +12,6 @@ import {
     FlatList,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system/legacy';
 import { Image } from 'expo-image';
 import { Camera, Upload, CheckCircle, X, FileImage, Calendar, ClipboardList } from 'lucide-react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,6 +28,7 @@ interface BloodTestRecord {
 export default function BloodTestScreen() {
     const queryClient = useQueryClient();
     const [imageUri, setImageUri] = useState<string | null>(null);
+    const [imageBase64, setImageBase64] = useState<string | null>(null);
     const [imageMimeType, setImageMimeType] = useState<string>('image/jpeg');
     const [note, setNote] = useState<string>('');
     const [showImage, setShowImage] = useState<boolean>(true);
@@ -55,19 +55,14 @@ export default function BloodTestScreen() {
 
     const uploadMutation = useMutation({
         mutationFn: async () => {
-            if (!imageUri) throw new Error('Lütfen önce bir resim seçin');
+            if (!imageUri || !imageBase64) throw new Error('Lütfen önce bir resim seçin');
             const token = await getToken();
             if (!token) throw new Error('Yüklemek için giriş yapmanız gerekiyor');
-
-            // Read file as base64 string literal (EncodingType may be undefined in some versions)
-            const base64 = await FileSystem.readAsStringAsync(imageUri, {
-                encoding: 'base64' as any,
-            });
 
             const fileName = imageUri.split('/').pop() ?? 'blood-test.jpg';
 
             return apiPost('/api/blood-tests', {
-                imageBase64: base64,
+                imageBase64: imageBase64,
                 imageMimeType,
                 fileName,
                 note,
@@ -95,9 +90,11 @@ export default function BloodTestScreen() {
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 quality: 0.6, // compress a bit to keep base64 size manageable
                 allowsEditing: false,
+                base64: true, // Request base64 directly to avoid FileSystem permission errors
             });
             if (!result.canceled && result.assets[0]) {
                 setImageUri(result.assets[0].uri);
+                setImageBase64(result.assets[0].base64 ?? null);
                 setImageMimeType(result.assets[0].mimeType ?? 'image/jpeg');
                 setShowImage(true);
             }
@@ -108,6 +105,7 @@ export default function BloodTestScreen() {
 
     const handleReset = useCallback(() => {
         setImageUri(null);
+        setImageBase64(null);
         setNote('');
         setShowImage(true);
     }, []);
