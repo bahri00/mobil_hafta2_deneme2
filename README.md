@@ -6,6 +6,13 @@ Hem hastalar hem de onaylanmış tıbbi uzmanlar (doktorlar) platforma kayıt ol
 
 ---
 
+## 📱 İndirme ve Demo
+
+- **📥 APK İndir:** [Android cihazınıza kurmak için tıklayın](https://expo.dev/artifacts/eas/a7woaReYZA6awfhkWgM3PQ.apk)
+- **🎥 Uygulama Demo Videosu:** [YouTube Üzerinden İzleyin](https://www.youtube.com/shorts/mg0WrVctY1M)
+
+---
+
 ## 🛠 Kullanılan Teknolojiler
 
 ### Frontend (Mobil Uygulama)
@@ -25,7 +32,7 @@ Hem hastalar hem de onaylanmış tıbbi uzmanlar (doktorlar) platforma kayıt ol
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma Adımları
+## 🚀 Yerelde Nasıl Çalıştıracağım? (Kurulum Adımları)
 
 Proje temel olarak iki ana dizine ayrılmıştır: `backend` (Sunucu) ve `meme_kanseri` (Mobil Frontend).
 
